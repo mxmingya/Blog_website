@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Post
 from .form import PostForm
@@ -11,11 +12,14 @@ def post_create(request):
         instance = form.save(commit=False)
         instance.save()
         return HttpResponseRedirect(instance.get_absolute_url())
-    content = {
-        "title": 'Create',
-        'form': form,
-    }
-    return render(request, 'form_detail', content)
+        messages.success(request, 'Saved!!!')
+    else:
+        content = {
+            "title": 'Create',
+            'form': form,
+        }
+        messages.error(request, 'Not Saved Properly!!!')
+        return render(request, 'form_detail', content)
 
 def post_detail(request, id):
     instance = get_object_or_404(Post, id=id)
@@ -39,19 +43,21 @@ def post_update(request,id):
     if form.is_valid:
         instance = form.save(commit=False)
         instance.save()
+        messages.success(request, 'Saved!!!')
         return HttpResponseRedirect(instance.get_absolute_url())
-    content = {
-        'title': 'update',
-        'form': form,
-        'instance': instance,
-    }
-    return render(request, 'post_form.html', content)
+    else:
+        content = {
+            'title': 'update',
+            'form': form,
+            'instance': instance,
+        }
+        messages.warning(request, "Not Saved Properly!!!")
+        return render(request, 'post_form.html', content)
 
 def post_delete(request):
-    content = {
-        'title': 'delete'
-    }
-    return render(request, 'index.html', content)
+    intance = get_object_or_404(request, commit=False)
+    instance.delete()
+    messages.success(request, 'Item Deleted Successfully!!!')
 
 def form_create(request):
     if request.method == 'POST':
