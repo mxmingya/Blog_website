@@ -1,20 +1,20 @@
 <!--DOCTYPE html-->
-<html>
-<body>
-  {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-  <h1>{{ title }} is my home_page</h1>
-<a href='{{get_absolute_url}}' </a><br/>
-  {{instance.title}} <br/>
-  {{instance.content}} <br/>
-  {{instance.update}} <br/>
-  {{instance.timestamp}} <br/>
-  {{instance.id}} <br/>
+{% extends "base.html" %}
+{% block head_title %} {{instance.title}} | {{ block.super }} {% endblock head_title %}
 
-</body>
-</hrml>
+<style>
+{% block style %}
+<h1>
+  {color: #8888;}
+{% endblock style %}
+</style>
+
+{% block content %}
+<h1>{{ title }}</h1>
+{{instance.title}} <br/>
+{{instance.content}} <br/>
+{{instance.update}} <br/>
+{{instance.timestamp}} <br/>
+{{instance.id}} <br/>
+
+{% endblock %}

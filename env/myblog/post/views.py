@@ -11,33 +11,31 @@ def post_create(request):
     if form.is_valid:
         instance = form.save(commit=False)
         instance.save()
-        messages.success(request, 'Saved!!!')
+        messages.success(request, 'New Post Created')
         return HttpResponseRedirect(instance.get_absolute_url())
-    else:
-        content = {
-            "title": 'Create',
-            'form': form,
-        }
-        messages.error(request, 'Not Saved Properly!!!')
-        return render(request, 'form_detail', content)
+    context = {
+        'form': form,
+    }
+    messages.error(request, 'Not Saved Properly!!!')
+    return render(request, 'post_form.html', context)
 
 def post_detail(request, id):
     instance = get_object_or_404(Post, id=id)
-    content = {
+    context = {
         "title" : instance.title,
         'instance': instance,
     }
-    return render(request, 'post_detail.html', content)
+    return render(request, 'post_detail.html', context)
 
 def post_list(request):
     query_set = Post.objects.all()
-    content = {
+    context = {
         'obj_list': query_set,
         'title': 'List'
     }
-    return render(request, 'index.html', content)
+    return render(request, 'post_list.html', context)
 
-def post_update(request,id):
+def post_update(request,id=None):
     instance = get_object_or_404(Post, id=id)
     form = PostForm(request.POST or None, instance=instance)
     if form.is_valid:
@@ -45,14 +43,12 @@ def post_update(request,id):
         instance.save()
         messages.success(request, 'Saved!!!')
         return HttpResponseRedirect(instance.get_absolute_url())
-    else:
-        content = {
-            'title': 'update',
-            'form': form,
-            'instance': instance,
-        }
-        messages.warning(request, "Not Saved Properly!!!")
-        return render(request, 'post_form.html', content)
+    content = {
+        'title': 'update',
+        'instance': instance,
+        'form': form,
+    }
+    return render(request, 'post_form.html', context)
 
 def post_delete(request):
     intance = get_object_or_404(request, commit=False)
@@ -60,17 +56,14 @@ def post_delete(request):
     messages.success(request, 'Item Deleted Successfully!!!')
 
 def form_create(request):
-    if request.method == 'POST':
-        #process the data from the request
-        form = PostForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.save()
-            content = {
-                'form': form
-            }
-            return render(request, 'form_detail.html', content)
-    else:
-        #if the methos == 'GET' or other method, we create a new blank form
-        form = PostForm()
-        return render(request, 'form_detail.html', {'form':form})
+    form = PostForm(request.POST or None)
+    if form.is_valid():
+        #if theres already such a form, we gonna redirect to its link and edit it
+        instance = form.save(commit=False)
+        instance.save()
+        messages.success(request, "New Form Create Successfully")
+        return HttpResponseRedirect(instance.get_absolute_url())
+    content = {
+        'form': form
+    }
+    return render(request, 'post_form.html', content)
