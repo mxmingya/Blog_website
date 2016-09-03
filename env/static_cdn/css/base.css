@@ -1,0 +1,7 @@
+/*run python3 manage.py collectstatic to add static files to the web server
+and run it every time we make changes to the /static/....
+*/
+
+h1{
+    color: #7777
+}
