@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Post
 from .form import PostForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 # function based views
 
@@ -28,10 +29,23 @@ def post_detail(request, id):
     return render(request, 'post_detail.html', context)
 
 def post_list(request):
-    query_set = Post.objects.all()
+    query_set_list = Post.objects.all().order_by("-timestamp")#line all the post in reverse order
+    paginator = Paginator(query_set_list, 10) # Show 25 contacts per page
+    page_request_var = 'page'#pagnition
+    page = request.GET.get(page_request_var)
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+
     context = {
-        'obj_list': query_set,
-        'title': 'Blog List'
+        'obj_list': query_set_list,
+        'title': 'Blog List',
+        'contacts': contacts
     }
     return render(request, 'post_list.html', context)
 

@@ -20,5 +20,22 @@
 {% cycle "" "<div class='col-sm-12'><hr/></div></div><div class='row'>" %}
 {% endfor %}
 </div>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <a href="?{{page_request_var}}={{ contacts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+        </span>
+
+        {% if contacts.has_next %}
+            <a href="?{{page_request_var}}={{ contacts.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
 </div>
 {% endblock %}
