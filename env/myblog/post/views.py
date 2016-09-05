@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def post_create(request):
     form = PostForm(request.POST or None)
-    if form.is_valid:
+    if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
         messages.success(request, 'New Post Created')
