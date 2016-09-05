@@ -31,7 +31,7 @@ def post_list(request):
     query_set = Post.objects.all()
     context = {
         'obj_list': query_set,
-        'title': 'List'
+        'title': 'Blog List'
     }
     return render(request, 'post_list.html', context)
 
