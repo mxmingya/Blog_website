@@ -12,6 +12,7 @@ def upload_location(instance, filename):
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
+    #slug = SlugField(unique=True)
     content = models.TextField(max_length=800)
     image = models.ImageField(upload_to=upload_location, height_field='height_field', width_field='width_field', null=True, blank=True)
     height_field = models.IntegerField(default=0)
