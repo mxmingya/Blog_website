@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from .models import Post
 from .form import PostForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -8,9 +8,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # function based views
 
 def post_create(request):
+    if not request.user.is_superuser or not request.user.is_staff:
+        raise Http404
+    if request.user.is_authenticaed():
+        raise Http404
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         instance = form.save(commit=False)
+        instance.user = request.user
         instance.save()
         messages.success(request, 'New Post Created')
         return HttpResponseRedirect(instance.get_absolute_url())
@@ -51,6 +56,8 @@ def post_list(request):
     return render(request, 'post_list.html', context)
 
 def post_update(request,id=None):
+    if not request.user.is_superuser or not request.user.is_staff:
+        raise Http404
     instance = get_object_or_404(Post, id=id)
     form = PostForm(request.POST or None, request.FILES or None, instance=instance)
     if form.is_valid:

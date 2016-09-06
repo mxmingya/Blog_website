@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.conf import settings
 # Create your models here.
 #for every time we modify models.py this file, we need to run
 #python3 manage.py makemigrations
@@ -11,6 +12,7 @@ def upload_location(instance, filename):
     return "%s/%s" %(instance.id, instance.id)
 
 class Post(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)#the default number of django user is 1
     title = models.CharField(max_length=200)
     #slug = SlugField(unique=True)
     content = models.TextField(max_length=800)
