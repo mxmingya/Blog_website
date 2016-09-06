@@ -21,6 +21,8 @@ class Post(models.Model):
     width_field = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=True, auto_now_add=False)
+    draft = models.BooleanField(default=False)
+    publish = models.DateTimeField(auto_now=False, auto_now_add=False)
     #these little shit will put the timestamp in the database automatically
 
     def __str__(self):
