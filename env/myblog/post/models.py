@@ -1,10 +1,20 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.utils import timezone
 # Create your models here.
 #for every time we modify models.py this file, we need to run
 #python3 manage.py makemigrations
 #python3 manage.py migrate
+
+
+#Post.objects.all()
+#Post.objects.create() all kinds of model managers
+class PostManager(models.Manager):
+    def active(self, *args, **kwargs):
+        #overwrite the default all
+        return super(PostManager, self).filter(draft=False).filter(publish__lte(timezone.now()))
+
 def upload_location(instance, filename):
     #parse the location according to the filename
     #this function does not accept filename setted with '.' in the name
@@ -24,7 +34,7 @@ class Post(models.Model):
     draft = models.BooleanField(default=False)
     publish = models.DateTimeField(auto_now=False, auto_now_add=False)
     #these little shit will put the timestamp in the database automatically
-
+    objects = PostManager()#overwrite the objects of Post into PostManager
     def __str__(self):
         return self.title
 
